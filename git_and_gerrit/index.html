@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" class="aspect-16-9">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Asciidoctor 0.1.4, dzslides backend">
+<title>Git &amp; Gerrit</title>
+<meta name="author" content="Zhong Jianxin">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton:400,700,800,400italic|Cedarville+Cursive">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
+<link rel="stylesheet" href="./dzslides/themes/highlight/asciidoctor.css">
+<link rel="stylesheet" href="./dzslides/themes/style/asciidoctor.css">
+<style>section:not(.topic) > h2 { display: none;}</style>
+<link rel="stylesheet" href="./dzslides/core/dzslides.css">
+<link rel="stylesheet" href="./dzslides/themes/transition/fade.css">
+</head>
+<body>
+<section class="title"><h1>Git &amp; Gerrit</h1><footer><span class="author">Zhong Jianxin</span> <span class="email"><a href="https://github.com/azuwis">@azuwis</a></span></footer></section>
+<section class="topic"><h2>OUTLINE</h2><ul><li>1. Prerequisite</li><li>2. Git Basic</li><li>3. Gerrit Code Review</li><li>4. Tips &amp; Tricks</li></ul></section>
+
+<section><p class="statement"><strong>Next</strong> <em class="icon-caret-right">&#8203;</em><br>
+Prerequisite</p></section>
+
+<section class="topic source"><h2>Install(Windows)</h2><dl><dt>Download</dt><dd><a href="http://git-scm.com/download/win">http://git-scm.com/download/win</a></dd><dt>Execute</dt><dd>Git-1.8.4-preview20130916.exe</dd><dt>Option</dt><dd>Checkout as-is, commit as-is</dd><dt>Execute</dt><dd><span class="image"><img src="images/Git-Icon-1788C.png" alt="Git logo" width="20" height="20"></span> Git Bash</dd></dl></section>
+
+<section class="topic source"><h2>Install(Linux &amp; Other)</h2><div class="listingblock"><div class="title">Debian/Ubuntu</div><pre class="highlight"><code class="bash">$ apt-get install git</code></pre></div>
+<div class="listingblock"><div class="title">Fedora</div><pre class="highlight"><code class="bash">$ yum install git</code></pre></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="icon-note" title="Note"></i></td><td class="content">Other platforms <a href="http://git-scm.com/downloads">http://git-scm.com/downloads</a></td></tr></table></div></section>
+
+<section class="topic source"><h2>Account &amp; SSH Keys</h2><dl><dt>Login</dt><dd><a href="https://your.gerrit.server/">https://your.gerrit.server/</a></dd><dt>Register Email</dt><dd>$Username &#8594; Settings &#8594; Contact Infomation &#8594; Register New Email</dd><dt>Setup SSH Public Keys</dt><dd>$Username &#8594; Settings &#8594; SSH Public Keys &#8594; Add Key</dd></dl></section>
+
+<section class="topic source"><h2>Generate SSH Keys</h2><div class="listingblock"><pre class="highlight"><code class="bash">$ ssh-keygen</code></pre></div>
+<div class="literalblock"><div class="title">Console output</div><pre class="literal">Generating public/private rsa key pair.
+Enter file in which to save the key (/c/Documents and Settings/azuwis/.ssh/id_rsa):
+Created directory '/c/Documents and Settings/azuwis/.ssh'.
+Enter passphrase (empty for no passphrase): <i class="conum" data-value="1"></i><b>(1)</b>
+Enter same passphrase again:
+Your identification has been saved in /c/Documents and Settings/azuwis/.ssh/id_rsa.
+Your public key has been saved in /c/Documents and Settings/azuwis/.ssh/id_rsa.pub.
+The key fingerprint is:
+cf:99:10:87:8f:46:5d:9c:72:cd:8a:a2:69:e0:90:25 azuwis@WINDOWS</pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Passphrase to protect the private key, <em>not</em> the account password.</td></tr></table></div>
+<div class="listingblock"><div class="title">Open the public key</div><pre class="highlight"><code class="bash">$ notepad ~/.ssh/id_rsa.pub</code></pre></div>
+<div class="admonitionblock warning"><table><tr><td class="icon"><i class="icon-warning" title="Warning"></i></td><td class="content"><code>~/.ssh/id_rsa</code> is the <em>private</em> key, should be kept <em>secret</em>.</td></tr></table></div></section>
+
+<section class="topic source"><h2>Configuration</h2><div class="listingblock"><div class="title">Email should be registered in gerrit</div><pre class="highlight"><code class="bash">$ git config --global user.name "Your Name"
+$ git config --global user.email user@your.email</code></pre></div>
+<div class="listingblock"><div class="title">Shorten commands(optional)</div><pre class="highlight"><code class="bash">$ git config --global alias.co checkout
+$ git config --global alias.st status
+$ git config --global alias.di diff
+$ git config --global alias.ci commit
+$ git config --global alias.br branch
+$ git config --global alias.dt difftool
+$ git config --global alias.mt mergetool</code></pre></div></section>
+
+<section><p class="statement"><strong>Next</strong> <em class="icon-caret-right">&#8203;</em><br>
+Git Basic</p></section>
+
+<section><blockquote><p>Git - the stupid <em>content tracker</em></p><br><cite>Git Manual(Linus Torvalds)</cite></blockquote></section>
+
+<section><blockquote><p>Git is a free and open source <em>distributed version control system</em>&#8230; with <em>speed and efficiency</em>.</p><br><cite>http://git-scm.com/</cite></blockquote></section>
+
+<section class="topic"><h2>Who Uses Git</h2><ul class="scatter"><li>Linux Kernel</li><li>Android</li><li>Fedora</li><li>FFmpeg</li><li>GCC</li><li>jQuery</li><li>Perl</li><li>Qt</li><li>Ruby on Rails</li><li>Twitter Bootstrap</li><li>etc&#8230;</li><li><a href="https://git.wiki.kernel.org/index.php/GitProjects">https://git.wiki.kernel.org/index.php/GitProjects</a></li></ul></section>
+
+<section class="topic source"><h2>Most used commands</h2><div class="literalblock"><pre class="literal">~$ git help
+usage: git [--version] [--help] [-C &lt;path&gt;] [-c name=value]
+           [--exec-path[=&lt;path&gt;]] [--html-path] [--man-path] [--info-path]
+           [-p|--paginate|--no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=&lt;path&gt;] [--work-tree=&lt;path&gt;] [--namespace=&lt;name&gt;]
+           &lt;command&gt; [&lt;args&gt;]
+
+The most commonly used git commands are:
+   add        Add file contents to the index
+   bisect     Find by binary search the change that introduced a bug
+   branch     List, create, or delete branches
+   checkout   Checkout a branch or paths to the working tree
+   clone      Clone a repository into a new directory
+   commit     Record changes to the repository
+   diff       Show changes between commits, commit and working tree, etc
+   fetch      Download objects and refs from another repository
+   grep       Print lines matching a pattern
+   init       Create an empty Git repository or reinitialize an existing one
+   log        Show commit logs
+   merge      Join two or more development histories together
+   mv         Move or rename a file, a directory, or a symlink
+   pull       Fetch from and integrate with another repository or a local branch
+   push       Update remote refs along with associated objects
+   rebase     Forward-port local commits to the updated upstream head
+   reset      Reset current HEAD to the specified state
+   rm         Remove files from the working tree and from the index
+   show       Show various types of objects
+   status     Show the working tree status
+   tag        Create, list, delete or verify a tag object signed with GPG</pre></div></section>
+
+<section class="topic source"><h2>Make a local copy</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git clone ssh://user@host:port/path/to/repo.git</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn checkout &lt;url&gt;</code></pre></div></section>
+
+<section class="topic source"><h2>View modified files</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git diff</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn diff | less</code></pre></div></section>
+
+<section class="topic source"><h2>Commit changes</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git add &lt;file&gt;
+$ git commit [-v]</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn commit &lt;file&gt;</code></pre></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="icon-note" title="Note"></i></td><td class="content">Git commit is a local operation, does not interact with remote repo.</td></tr></table></div></section>
+
+<section class="topic source"><h2>Everything is local</h2><blockquote><p>Most operations in Git only need local files and resources to operate.</p><br><cite>《Pro Git》</cite></blockquote></section>
+
+<section class="topic source"><h2>View history</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git log [-p] [-- &lt;file&gt;]
+$ gitk [--all]</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn log [&lt;file&gt;]</code></pre></div></section>
+
+<section class="topic source"><h2>Update from remote repo</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git pull [--rebase]</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn update</code></pre></div></section>
+
+<section class="topic source"><h2>Restore files</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git checkout &lt;file&gt;</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn revert &lt;file&gt;</code></pre></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="icon-note" title="Note"></i></td><td class="content"><code>git revert</code> differs from <code>svn revert</code>.</td></tr></table></div></section>
+
+<section class="topic source"><h2>Branching</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git branch &lt;branch&gt;
+$ git checkout &lt;branch&gt;</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn copy http://example.com/svn/trunk http://example.com/svn/branches/&lt;branch&gt;
+$ svn switch http://example.com/svn/branches/&lt;branch&gt;</code></pre></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="icon-note" title="Note"></i></td><td class="content">A branch in Git is simply a lightweight movable pointer.</td></tr></table></div></section>
+
+<section class="topic source"><h2>Tagging</h2><div class="listingblock"><div class="title">Git</div><pre class="highlight"><code class="bash">$ git tag &lt;tag&gt; # Create tag</code></pre></div>
+<div class="listingblock"><pre class="highlight"><code class="bash">$ git tag # List tag</code></pre></div>
+<div class="listingblock"><div class="title">SVN</div><pre class="highlight"><code class="bash">$ svn copy http://example.com/svn/trunk http://example.com/svn/tags/&lt;tag&gt; # Create tag</code></pre></div>
+<div class="listingblock"><pre class="highlight"><code class="bash">$ svn list http://example.com/svn/tags/ # List tag</code></pre></div>
+<div class="admonitionblock note"><table><tr><td class="icon"><i class="icon-note" title="Note"></i></td><td class="content">Tag in Git is like branch but <em>not movable</em>.</td></tr></table></div></section>
+
+<section class="topic"><h2>More About Git vs. SVN</h2><ol class="arabic"><li><a href="http://git.or.cz/course/svn.html">http://git.or.cz/course/svn.html</a></li><li><a href="https://git.wiki.kernel.org/index.php/GitSvnComparison">https://git.wiki.kernel.org/index.php/GitSvnComparison</a></li></ol></section>
+
+<section><p class="statement"><strong>Next</strong> <em class="icon-caret-right">&#8203;</em><br>
+Gerrit</p></section>
+
+<section><blockquote><p>(Gerrit is) Web based <em>code review</em> and project management for Git based projects.</p><br><cite>http://code.google.com/p/gerrit/</cite></blockquote></section>
+
+<section class="topic"><h2>Who Uses Gerrit</h2><ul class="scatter"><li>Android</li><li>Chromium(Google Chrome)</li><li>Eclipse</li><li>GerritHub</li><li>LibreOffice</li><li>Openstack</li><li>Qt</li><li>Wikimedia</li><li>etc&#8230;</li><li><a href="http://code.google.com/p/gerrit/wiki/ShowCases">http://code.google.com/p/gerrit/wiki/ShowCases</a></li></ul></section>
+
+<section><figure><img class="relax-x middle" src="images/intro-quick-central-gerrit.png" alt="intro quick central gerrit"><figcaption>Gerrit workflow</figcaption></figure></section>
+
+<section class="topic source"><h2>Install git-review (Windows)</h2><dl><dt>Download</dt><dd><a href="http://www.python.org/getit/">http://www.python.org/getit/</a></dd><dt>Execute</dt><dd>python-2.7.6.msi</dd><dt>Download</dt><dd><a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#pip">http://www.lfd.uci.edu/~gohlke/pythonlibs/#pip</a></dd><dt>Execute</dt><dd>pip-1.4.1.win32-py2.7.exe</dd></dl></section>
+
+<section class="topic source"><h2>Install git-review (Windows) (Cont.)</h2><dl><dt>Add to Path</dt><dd><code>X:\Python2.7.6;X:\Python2.7.6\Scripts</code></dd><dt>Execute</dt><dd><code>pip install git-review</code></dd></dl></section>
+
+<section class="topic source"><h2>Setup git-review</h2><div class="listingblock"><pre class="highlight"><code class="bash">$ git clone &lt;url&gt;
+$ cd &lt;repo_dir&gt;
+$ git review --setup
+$ git config pull.rebase true <i class="conum" data-value="1"></i><b>(1)</b></code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Always rebase to remote branch instead of merge.</td></tr></table></div></section>
+
+<section class="topic source"><h2>Upload changes to review</h2><div class="listingblock"><pre class="highlight"><code class="bash">$ git pull <i class="conum" data-value="1"></i><b>(1)</b>
+# edit file
+$ git add &lt;file&gt;
+$ git commit
+$ git review <i class="conum" data-value="2"></i><b>(2)</b>
+remote: Resolving deltas: 100% (2/2)
+remote: Processing changes: new: 1, refs: 1, done
+remote:
+remote: New Changes:
+remote:   http://your.gerrit.server/2338
+remote:
+To ssh://user@your.gerrit.server/test/test.git
+ * [new branch]      HEAD -&gt; refs/publish/master</code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Make sure local copy is update-to-date.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Use git-review to upload changes.</td></tr></table></div></section>
+
+<section class="topic"><h2>More about git-review</h2><ol class="arabic"><li><a href="https://gerrit-review.googlesource.com/Documentation/">https://gerrit-review.googlesource.com/Documentation/</a></li></ol></section>
+
+<section><p class="statement"><strong>Next</strong> <em class="icon-caret-right">&#8203;</em><br>
+Tips &amp; Tricks</p></section>
+
+<section><p class="statement">It&#8217;s bash, use <code><em>Tab</em></code> completion!</p></section>
+
+<section class="topic source"><h2>Getting Help</h2><div class="listingblock"><pre class="highlight"><code class="bash">$ git help tutorial
+$ git help tutorial-2
+$ git help
+$ git help &lt;subcommand&gt;</code></pre></div></section>
+
+<section class="topic source"><h2>Keep an Eye on Console Output</h2><div class="literalblock"><pre class="literal">~$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+
+	modified:   slides.adoc
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+
+	Guardfile
+	Makefile
+	attributes.adoc
+	dzslides/
+	export.sh
+	gen-slides.sh
+	slides.html
+
+no changes added to commit (use "git add" and/or "git commit -a")</pre></div></section>
+
+<section class="topic source"><h2>Git difftool/mergetool</h2><div class="listingblock"><pre class="highlight"><code class="bash">$ git mergetool
+...
+'git mergetool' will now attempt to use one of the following tools:
+opendiff kdiff3 tkdiff xxdiff meld tortoisemerge gvimdiff diffuse diffmerge ecmerge p4merge araxis bc3 codecompare emerge vimdiff</code></pre></div></section>
+
+<section class="topic source"><h2>Install &amp; config p4merge</h2><p><a href="http://www.perforce.com/product/components/perforce-visual-merge-and-diff-tools">http://www.perforce.com/product/components/perforce-visual-merge-and-diff-tools</a></p>
+<div class="listingblock"><pre class="highlight"><code class="bash">$ git config --global merge.tool p4merge
+$ git config --global mergetool.p4merge.path "X:\Perforce\p4merge.exe"
+$ git difftool
+$ git mergetool</code></pre></div></section>
+
+<section class="topic source"><h2>.gitignore</h2><div class="listingblock"><pre class="highlight"><code class="bash">$ cat .gitignore
+*.class
+*.jar
+*.war
+*.ear</code></pre></div>
+<p><a href="https://github.com/github/gitignore/">https://github.com/github/gitignore/</a></p></section>
+
+<section class="topic source"><h2>Who moved my cheese?</h2><div class="literalblock"><pre class="literal">~$ git blame &lt;file&gt;
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800   1) = Git &amp; Gerrit
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   2) Zhong Jianxin &lt;https://github.com/azuwis[@azuwis]&gt;
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   3) include::attributes.adoc[]
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   4)
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   5) [.topic]
+8d6502d6 (Jianxin 2013-12-24 20:51:35 +0800   6) == OUTLINE
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   7)
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800   8) - 1. Prerequisite
+00000000 (Jianxin 2013-12-25 12:29:12 +0800   9) - 2. Git Basic
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800  10) - 3. Gerrit Code Review
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800  11) - 4. Tips &amp; Tricks
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  12)
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  13) == !
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  14)
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  15) [.statement]
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  16) {next-label} +
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  17) Prerequisite</pre></div></section>
+
+<section class="topic source"><h2>Git bisect - Find by binary search the change that introduced a bug</h2><div class="listingblock"><pre class="highlight"><code class="bash">$ git bisect start HEAD v3 -- <i class="conum" data-value="1"></i><b>(1)</b>
+$ git bisect run make <i class="conum" data-value="2"></i><b>(2)</b></code></pre></div>
+<div class="colist arabic"><table><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td><code>HEAD</code> is bad, <code>v3</code> is good.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><code>make</code> is the test script.</td></tr></table></div></section>
+
+<section class="topic source"><h2>GUI Frontends</h2><dl><dt>Eclipse</dt><dd><a href="http://www.eclipse.org/egit/">http://www.eclipse.org/egit/</a></dd><dt>Visual Studio</dt><dd><a href="http://code.google.com/p/gitextensions/">http://code.google.com/p/gitextensions/</a></dd><dt>Other</dt><dd><a href="https://git.wiki.kernel.org/index.php/Interfaces,_frontends,_and_tools#Graphical_Interfaces">https://git.wiki.kernel.org/index.php/Interfaces,_frontends,_and_tools#Graphical_Interfaces</a></dd></dl></section>
+
+<section class="topic"><h2>Further Readings</h2><ol class="arabic"><li><a href="http://git-scm.com/book">http://git-scm.com/book</a></li><li><a href="http://git-scm.com/book/zh">http://git-scm.com/book/zh</a></li><li><a href="http://cheat.errtheblog.com/s/git">http://cheat.errtheblog.com/s/git</a></li><li><a href="http://schacon.github.com/git/user-manual.html">http://schacon.github.com/git/user-manual.html</a></li><li><a href="http://marklodato.github.com/visual-git-guide/index-en.html">http://marklodato.github.com/visual-git-guide/index-en.html</a></li></ol></section>
+
+<section class="topic ending"><h2 class="name">Q &amp; A</h2><p class="footer"><em class="icon-twitter">&#8203;</em> @azuwis</p></section>
+<script src="./dzslides/core/dzslides.js"></script>
+<script src="./dzslides/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
