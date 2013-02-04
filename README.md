@@ -7,3 +7,4 @@ source code for a git presentation
     $ gem install mdpress
     $ mdpress git.md
     $ cp -r image/ git/
+    $ firefox git/index.html
