@@ -4,7 +4,7 @@ ASCIIDOCTOR=asciidoctor
 #ASCIIDOCTOR=~/projects/asciidoctor/asciidoctor/bin/asciidoctor
 BACKEND_TEMPLATES=~/src/asciidoctor-backends
 TEMPLATE_ENGINE=slim
-DECK=slides
+DECK=index
 
 if [ "$1" == "pack" ]; then
   PACK=1
