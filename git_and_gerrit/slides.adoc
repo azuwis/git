@@ -1,0 +1,500 @@
+= Git & Gerrit
+Zhong Jianxin <https://github.com/azuwis[@azuwis]>
+include::attributes.adoc[]
+
+[.topic]
+== OUTLINE
+
+- 1. Prerequisite
+- 2. Git Basic
+- 3. Gerrit Code Review
+- 4. Tips & Tricks
+
+== !
+
+[.statement]
+{next-label} +
+Prerequisite
+
+[.topic.source]
+== Install(Windows)
+
+Download:: http://git-scm.com/download/win
+
+Execute:: Git-1.8.4-preview20130916.exe
+
+Option:: Checkout as-is, commit as-is
+
+Execute:: image:http://git-scm.com/images/logos/downloads/Git-Icon-1788C.png[Git logo, 20, 20] Git Bash
+
+[.topic.source]
+== Install(Linux & Other)
+
+.Debian/Ubuntu
+
+ $ apt-get install git
+
+.Fedora
+
+ $ yum install git
+
+NOTE: Other platforms http://git-scm.com/downloads
+
+[.topic.source]
+== Account & SSH Keys
+
+Login:: https://your.gerrit.server/
+
+Register Email:: $Username -> Settings -> Contact Infomation -> Register New Email
+
+Setup SSH Public Keys:: $Username -> Settings -> SSH Public Keys -> Add Key
+
+[.topic.source]
+== Generate SSH Keys
+
+ $ ssh-keygen
+
+.Console output
+....
+Generating public/private rsa key pair.
+Enter file in which to save the key (/c/Documents and Settings/azuwis/.ssh/id_rsa):
+Created directory '/c/Documents and Settings/azuwis/.ssh'.
+Enter passphrase (empty for no passphrase): #<1>
+Enter same passphrase again:
+Your identification has been saved in /c/Documents and Settings/azuwis/.ssh/id_rsa.
+Your public key has been saved in /c/Documents and Settings/azuwis/.ssh/id_rsa.pub.
+The key fingerprint is:
+cf:99:10:87:8f:46:5d:9c:72:cd:8a:a2:69:e0:90:25 azuwis@WINDOWS
+....
+<1> Passphrase to protect the private key, _not_ the account password.
+
+.Open the public key
+
+ $ notepad ~/.ssh/id_rsa.pub
+
+WARNING: +~/.ssh/id_rsa+ is the _private_ key, should be kept _secret_.
+
+[.topic.source]
+== Configuration
+.Email should be registered in gerrit
+....
+$ git config --global user.name "Your Name"
+$ git config --global user.email user@your.email
+....
+
+.Shorten commands(optional)
+....
+$ git config --global alias.co checkout
+$ git config --global alias.st status
+$ git config --global alias.di diff
+$ git config --global alias.ci commit
+$ git config --global alias.br branch
+$ git config --global alias.dt difftool
+$ git config --global alias.mt mergetool
+....
+
+== !
+
+[.statement]
+{next-label} +
+Git Basic
+
+== !
+
+"Git - the stupid _content tracker_"
+-- Git Manual(Linus Torvalds)
+
+== !
+
+"Git is a free and open source _distributed version control system_... with _speed and efficiency_."
+-- http://git-scm.com/
+
+[.topic]
+== Who Uses Git
+
+[.scatter]
+- Linux Kernel
+- Android
+- Fedora
+- FFmpeg
+- GCC
+- jQuery
+- Perl
+- Qt
+- Ruby on Rails
+- Twitter Bootstrap
+- etc...
+- https://git.wiki.kernel.org/index.php/GitProjects
+
+[.topic.source]
+== Most used commands
+....
+~$ git help
+usage: git [--version] [--help] [-C <path>] [-c name=value]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p|--paginate|--no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           <command> [<args>]
+
+The most commonly used git commands are:
+   add        Add file contents to the index
+   bisect     Find by binary search the change that introduced a bug
+   branch     List, create, or delete branches
+   checkout   Checkout a branch or paths to the working tree
+   clone      Clone a repository into a new directory
+   commit     Record changes to the repository
+   diff       Show changes between commits, commit and working tree, etc
+   fetch      Download objects and refs from another repository
+   grep       Print lines matching a pattern
+   init       Create an empty Git repository or reinitialize an existing one
+   log        Show commit logs
+   merge      Join two or more development histories together
+   mv         Move or rename a file, a directory, or a symlink
+   pull       Fetch from and integrate with another repository or a local branch
+   push       Update remote refs along with associated objects
+   rebase     Forward-port local commits to the updated upstream head
+   reset      Reset current HEAD to the specified state
+   rm         Remove files from the working tree and from the index
+   show       Show various types of objects
+   status     Show the working tree status
+   tag        Create, list, delete or verify a tag object signed with GPG
+....
+
+[.topic.source]
+== Make a local copy
+
+.Git
+
+ $ git clone ssh://user@host:port/path/to/repo.git
+
+.SVN
+
+ $ svn checkout <url>
+
+[.topic.source]
+== View modified files
+
+.Git
+
+ $ git diff
+
+.SVN
+
+ $ svn diff | less
+
+[.topic.source]
+== Commit changes
+
+.Git
+
+ $ git add <file>
+ $ git commit [-v]
+
+.SVN
+
+ $ svn commit <file>
+
+NOTE: Git commit is a local operation, does not interact with remote repo.
+
+[.topic.source]
+== Everything is local
+
+"Most operations in Git only need local files and resources to operate."
+-- 《Pro Git》
+
+[.topic.source]
+== View history
+
+.Git
+
+ $ git log [-p] [-- <file>]
+ $ gitk [--all]
+
+.SVN
+
+ $ svn log [<file>]
+
+[.topic.source]
+== Update from remote repo
+
+.Git
+
+ $ git pull [--rebase]
+
+.SVN
+
+ $ svn update
+
+[.topic.source]
+== Restore files
+
+.Git
+
+ $ git checkout <file>
+
+.SVN
+
+ $ svn revert <file>
+
+NOTE: +git revert+ differs from +svn revert+.
+
+[.topic.source]
+== Branching
+
+.Git
+
+ $ git branch <branch>
+ $ git checkout <branch>
+
+.SVN
+
+ $ svn copy http://example.com/svn/trunk http://example.com/svn/branches/<branch>
+ $ svn switch http://example.com/svn/branches/<branch>
+
+NOTE: A branch in Git is simply a lightweight movable pointer.
+
+[.topic.source]
+== Tagging
+
+.Git
+
+ $ git tag <tag> # Create tag
+
+ $ git tag # List tag
+
+.SVN
+
+ $ svn copy http://example.com/svn/trunk http://example.com/svn/tags/<tag> # Create tag
+
+ $ svn list http://example.com/svn/tags/ # List tag
+
+NOTE: Tag in Git is like branch but _not movable_.
+
+[.topic]
+== More About Git vs. SVN
+
+. http://git.or.cz/course/svn.html
+
+. https://git.wiki.kernel.org/index.php/GitSvnComparison
+
+== !
+
+[.statement]
+{next-label} +
+Gerrit
+
+== !
+"(Gerrit is) Web based _code review_ and project management for Git based projects."
+-- http://code.google.com/p/gerrit/
+
+[.topic]
+== Who Uses Gerrit
+
+[.scatter]
+- Android
+- Chromium(Google Chrome)
+- Eclipse
+- GerritHub
+- LibreOffice
+- Openstack
+- Qt
+- Wikimedia
+- etc...
+- http://code.google.com/p/gerrit/wiki/ShowCases
+
+== !
+
+[.relax-x.middle, {caption-off}]
+.Gerrit workflow
+image::https://gerrit-review.googlesource.com/Documentation/images/intro-quick-central-gerrit.png[]
+
+[.topic.source]
+== Install git-review (Windows)
+
+Download:: http://www.python.org/getit/
+
+Execute:: python-2.7.6.msi
+
+Download:: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pip
+
+Execute:: pip-1.4.1.win32-py2.7.exe
+
+[.topic.source]
+== Install git-review (Windows) (Cont.)
+
+Add to Path::
++X:\Python2.7.6;X:\Python2.7.6\Scripts+
+
+Execute:: +pip install git-review+
+
+[.topic.source]
+== Setup git-review
+....
+$ git clone <url>
+$ cd <repo_dir>
+$ git review --setup
+$ git config pull.rebase true #<1>
+....
+<1> Always rebase to remote branch instead of merge.
+
+[.topic.source]
+== Upload changes to review
+....
+$ git pull #<1>
+# edit file
+$ git add <file>
+$ git commit
+$ git review #<2>
+remote: Resolving deltas: 100% (2/2)
+remote: Processing changes: new: 1, refs: 1, done
+remote:
+remote: New Changes:
+remote:   http://your.gerrit.server/2338
+remote:
+To ssh://user@your.gerrit.server/test/test.git
+ * [new branch]      HEAD -> refs/publish/master
+....
+<1> Make sure local copy is update-to-date.
+<2> Use git-review to upload changes.
+
+[.topic]
+== More about git-review
+
+. https://gerrit-review.googlesource.com/Documentation/
+
+== !
+
+[.statement]
+{next-label} +
+Tips & Tricks
+
+== !
+
+[.statement]
+It's bash, use +_Tab_+ completion!
+
+[.topic.source]
+== Getting Help
+....
+$ git help tutorial
+$ git help tutorial-2
+$ git help
+$ git help <subcommand>
+....
+
+[.topic.source]
+== Keep an Eye on Console Output
+....
+~$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   slides.adoc
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	Guardfile
+	Makefile
+	attributes.adoc
+	dzslides/
+	export.sh
+	gen-slides.sh
+	slides.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+....
+
+[.topic.source]
+== Git difftool/mergetool
+....
+$ git mergetool
+...
+'git mergetool' will now attempt to use one of the following tools:
+opendiff kdiff3 tkdiff xxdiff meld tortoisemerge gvimdiff diffuse diffmerge ecmerge p4merge araxis bc3 codecompare emerge vimdiff
+....
+
+[.topic.source]
+== Install & config p4merge
+
+http://www.perforce.com/product/components/perforce-visual-merge-and-diff-tools
+
+....
+$ git config --global merge.tool p4merge
+$ git config --global mergetool.p4merge.path "X:\Perforce\p4mergeGit.exe"
+$ git difftool
+$ git mergetool
+....
+
+[.topic.source]
+== .gitignore
+....
+$ cat .gitignore
+*.class
+*.jar
+*.war
+*.ear
+....
+
+https://github.com/github/gitignore/
+
+[.topic.source]
+== Who moved my cheese?
+....
+~$ git blame <file>
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800   1) = Git & Gerrit
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   2) Zhong Jianxin <https://github.com/azuwis[@azuwis]>
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   3) include::attributes.adoc[]
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   4)
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   5) [.topic]
+8d6502d6 (Jianxin 2013-12-24 20:51:35 +0800   6) == OUTLINE
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800   7)
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800   8) - 1. Prerequisite
+00000000 (Jianxin 2013-12-25 12:29:12 +0800   9) - 2. Git Basic
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800  10) - 3. Gerrit Code Review
+4feabaf9 (Jianxin 2013-12-24 22:56:24 +0800  11) - 4. Tips & Tricks
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  12)
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  13) == !
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  14)
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  15) [.statement]
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  16) {next-label} +
+^be340e7 (Jianxin 2013-12-24 15:12:31 +0800  17) Prerequisite
+....
+
+[.topic.source]
+== Git bisect - Find by binary search the change that introduced a bug
+
+....
+$ git bisect start HEAD v3 -- #<1>
+$ git bisect run make #<1>
+....
+<1> +HEAD+ is bad, +v3+ is good.
+<2> +make+ is the test script.
+
+[.topic.source]
+== GUI Frontends
+
+Eclipse:: http://www.eclipse.org/egit/
+Visual Studio:: http://code.google.com/p/gitextensions/
+Other:: https://git.wiki.kernel.org/index.php/Interfaces,_frontends,_and_tools#Graphical_Interfaces
+
+[.topic]
+== Further Readings
+
+. http://git-scm.com/book
+
+. http://git-scm.com/book/zh
+
+. http://cheat.errtheblog.com/s/git
+
+. http://schacon.github.com/git/user-manual.html
+
+. http://marklodato.github.com/visual-git-guide/index-en.html
+
+[.topic.ending, hrole="name"]
+== Q & A
+
+[.footer]
+[icon-twitter]'{zwsp}' @azuwis
