@@ -468,7 +468,7 @@ https://github.com/github/gitignore/
 
 ....
 $ git bisect start HEAD v3 -- #<1>
-$ git bisect run make #<1>
+$ git bisect run make #<2>
 ....
 <1> +HEAD+ is bad, +v3+ is good.
 <2> +make+ is the test script.
