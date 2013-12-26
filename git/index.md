@@ -1,6 +1,6 @@
 # Git /ɡɪt/
 ## the stupid content tracker
-http://azuwis.github.com/git
+http://azuwis.github.com/slides/git/
 
 ---
 = data-x="1000"
