@@ -14,6 +14,6 @@ Feb 2013::
 
   * link:git/index.html[Git] [ https://github.com/azuwis/slides/blob/master/git/index.md[source] ]
 
-Nov 2013::
+Dec 2013::
 
  * link:git_and_gerrit/index.html[Git & Gerrit] [ https://github.com/azuwis/slides/blob/master/git_and_gerrit/index.adoc[source] ]
