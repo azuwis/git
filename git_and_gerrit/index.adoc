@@ -423,7 +423,7 @@ http://www.perforce.com/product/components/perforce-visual-merge-and-diff-tools
 
 ....
 $ git config --global merge.tool p4merge
-$ git config --global mergetool.p4merge.path "X:\Perforce\p4mergeGit.exe"
+$ git config --global mergetool.p4merge.path "X:\Perforce\p4merge.exe"
 $ git difftool
 $ git mergetool
 ....
